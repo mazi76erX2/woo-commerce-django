@@ -5,8 +5,42 @@ Super simple local setup.
 ## Requirements
 
 - Python 3.14+
+- Docker + Docker Compose
 
-## Install
+## 1) Start WordPress + MySQL (Docker)
+
+```bash
+docker compose up -d
+```
+
+Open `http://localhost:8080` and complete the WordPress install wizard.
+
+## 2) Install WooCommerce in WordPress
+
+In WordPress admin:
+
+- Go to `Plugins` → `Add New`
+- Search for `WooCommerce`
+- Install and activate it
+
+## 3) Change permalinks (required)
+
+In WordPress admin:
+
+- Go to `Settings` → `Permalinks`
+- Select `Post name`
+- Click `Save Changes`
+
+## 4) Create WooCommerce API keys
+
+In WordPress admin:
+
+- Go to `WooCommerce` → `Settings` → `Advanced` → `REST API`
+- Click `Add key`
+- Permission: `Read`
+- Copy the `Consumer key` and `Consumer secret`
+
+## 5) Install Django app
 
 ```bash
 python3 -m venv .venv
@@ -14,18 +48,24 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-## Environment
+## 6) Environment
 
 Create a `.env` file in the project root:
 
 ```env
 SECRET_KEY=dev-secret-key
-WOO_API_URL=https://your-store.com/wp-json/wc/v3
+WOO_API_URL=http://localhost:8080/wp-json/wc/v3
+
+# Used by Django settings
 WOO_CONSUMER_KEY=ck_xxx
 WOO_CONSUMER_SECRET=cs_xxx
+
+# Used by current assessment view
+WOO_KEY=ck_xxx
+WOO_SECRET=cs_xxx
 ```
 
-## Run
+## 7) Run Django
 
 ```bash
 python manage.py migrate

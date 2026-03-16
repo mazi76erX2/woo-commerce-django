@@ -132,6 +132,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 WOO_API_URL = os.getenv("WOO_API_URL")
 WOO_CONSUMER_KEY = os.getenv("WOO_CONSUMER_KEY")
 WOO_CONSUMER_SECRET = os.getenv("WOO_CONSUMER_SECRET")
+WOO_WEBHOOK_SECRET = os.getenv("WOO_WEBHOOK_SECRET", "")
+
+# ClickUp
+CLICKUP_API_URL = os.getenv("CLICKUP_API_URL", "https://api.clickup.com/api/v2")
+CLICKUP_TOKEN = os.getenv("CLICKUP_TOKEN", "")
+CLICKUP_LIST_ID = os.getenv("CLICKUP_LIST_ID", "")
 
 TIME_ZONE = "Europe/London"
 USE_TZ = True

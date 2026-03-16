@@ -63,6 +63,15 @@ WOO_CONSUMER_SECRET=cs_xxx
 # Used by current assessment view
 WOO_KEY=ck_xxx
 WOO_SECRET=cs_xxx
+
+# Used by WooCommerce webhook verification
+WOO_WEBHOOK_SECRET=your_webhook_secret
+
+# ClickUp sync
+CLICKUP_TOKEN=pk_xxx
+CLICKUP_LIST_ID=123456789012
+# Optional (defaults to https://api.clickup.com/api/v2)
+# CLICKUP_API_URL=https://api.clickup.com/api/v2
 ```
 
 ## 7) Run Django
@@ -75,3 +84,27 @@ python manage.py runserver
 API endpoint:
 
 - `GET http://127.0.0.1:8000/api/orders/today/`
+
+## 8) WooCommerce → ClickUp sync setup
+
+Create DB tables:
+
+```bash
+python manage.py migrate
+```
+
+In WordPress admin, create a WooCommerce webhook:
+
+- Go to `WooCommerce` → `Settings` → `Advanced` → `Webhooks`
+- Click `Add webhook`
+- Topic: `Order created` (optionally add another for `Order updated`)
+- Delivery URL: `http://host.docker.internal:8000/api/orders/webhook/woocommerce/`
+- Secret: use the same value as `WOO_WEBHOOK_SECRET` in `.env`
+- Status: `Active`
+
+How it works:
+
+- WooCommerce sends order payload to your webhook endpoint
+- Django verifies signature (`X-WC-Webhook-Signature`)
+- A ClickUp task is created for first sync, then updated for later changes
+- Duplicate webhook deliveries are ignored after processing

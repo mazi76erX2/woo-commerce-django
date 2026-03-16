@@ -138,6 +138,7 @@ WOO_WEBHOOK_SECRET = os.getenv("WOO_WEBHOOK_SECRET", "")
 CLICKUP_API_URL = os.getenv("CLICKUP_API_URL", "https://api.clickup.com/api/v2")
 CLICKUP_TOKEN = os.getenv("CLICKUP_TOKEN", "")
 CLICKUP_LIST_ID = os.getenv("CLICKUP_LIST_ID", "")
+CLICKUP_TASK_STATUS = os.getenv("CLICKUP_TASK_STATUS", "")
 
 TIME_ZONE = "Europe/London"
 USE_TZ = True

@@ -70,8 +70,12 @@ WOO_WEBHOOK_SECRET=your_webhook_secret
 # ClickUp sync
 CLICKUP_TOKEN=pk_xxx
 CLICKUP_LIST_ID=123456789012
+# You can also paste the full list URL; the app will extract the list ID
+# CLICKUP_LIST_ID=https://app.clickup.com/90152473472/v/l/2kyr34w0-455?pr=901510547731
 # Optional (defaults to https://api.clickup.com/api/v2)
 # CLICKUP_API_URL=https://api.clickup.com/api/v2
+# Optional: only set this if your list has a matching status name
+# CLICKUP_TASK_STATUS=to do
 ```
 
 ## 7) Run Django

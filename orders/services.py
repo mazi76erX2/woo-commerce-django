@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import base64
 import json
+import re
 from datetime import datetime, time
 from django.conf import settings
 from django.utils import timezone
@@ -110,6 +111,18 @@ def _clickup_headers():
     }
 
 
+def _normalize_clickup_list_id(value):
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+
+    match = re.search(r"/l/([^/?#]+)", raw)
+    if match:
+        return match.group(1)
+
+    return raw
+
+
 def _build_clickup_payload(order_data):
     billing = order_data.get("billing", {})
     first_name = billing.get("first_name", "")
@@ -128,11 +141,16 @@ def _build_clickup_payload(order_data):
     if item_summary:
         description_lines.append(f"Items: {item_summary}")
 
-    return {
+    payload = {
         "name": f"Order #{order_id} - {customer}",
         "description": "\n".join(description_lines),
-        "status": "to do",
     }
+
+    status_value = getattr(settings, "CLICKUP_TASK_STATUS", "").strip()
+    if status_value:
+        payload["status"] = status_value
+
+    return payload
 
 
 def sync_order_to_clickup(order_data):
@@ -143,7 +161,9 @@ def sync_order_to_clickup(order_data):
     clickup_api_url = getattr(
         settings, "CLICKUP_API_URL", "https://api.clickup.com/api/v2"
     )
-    clickup_list_id = getattr(settings, "CLICKUP_LIST_ID", "")
+    clickup_list_id = _normalize_clickup_list_id(
+        getattr(settings, "CLICKUP_LIST_ID", "")
+    )
     if not clickup_list_id:
         raise ClickUpSyncError("CLICKUP_LIST_ID is not configured")
 
